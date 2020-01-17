@@ -330,6 +330,15 @@ int8_t otPlatRadioGetReceiveSensitivity(otInstance *aInstance);
 void otPlatRadioGetIeeeEui64(otInstance *aInstance, uint8_t *aIeeeEui64);
 
 /**
+ * Set the factory-assigned IEEE EUI-64. Implementation of this function is optional.
+ *
+ * @param[in]  aInstance   The OpenThread instance structure.
+ * @param[out] aIeeeEui64  A pointer to the factory-assigned IEEE EUI-64.
+ *
+ */
+void otPlatRadioSetIeeeEui64(otInstance *aInstance, const uint8_t *aIeeeEui64);
+
+/**
  * Set the PAN ID for address filtering.
  *
  * @param[in] aInstance  The OpenThread instance structure.

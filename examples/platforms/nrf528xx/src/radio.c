@@ -196,7 +196,17 @@ void otPlatRadioGetIeeeEui64(otInstance *aInstance, uint8_t *aIeeeEui64)
 
     uint64_t factoryAddress;
     uint32_t index = 0;
-
+#if OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_ENABLE
+    // Read Factory Assigned Mac Address only if its UICR register is not set to default value.
+    if ((NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG1] != 0xffffffff) ||
+        (NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG2] != 0xffffffff))
+    {
+        factoryAddress = (uint64_t)(NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG1]) << 32;
+        factoryAddress |= NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG2];
+        memcpy(aIeeeEui64, &factoryAddress, sizeof(factoryAddress));
+        return;
+    }
+#endif // OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_ENABLE
     // Set the MAC Address Block Larger (MA-L) formerly called OUI.
     aIeeeEui64[index++] = (OPENTHREAD_CONFIG_STACK_VENDOR_OUI >> 16) & 0xff;
     aIeeeEui64[index++] = (OPENTHREAD_CONFIG_STACK_VENDOR_OUI >> 8) & 0xff;
@@ -206,6 +216,40 @@ void otPlatRadioGetIeeeEui64(otInstance *aInstance, uint8_t *aIeeeEui64)
     factoryAddress = (uint64_t)NRF_FICR->DEVICEID[0] << 32;
     factoryAddress |= NRF_FICR->DEVICEID[1];
     memcpy(aIeeeEui64 + index, &factoryAddress, sizeof(factoryAddress) - index);
+}
+
+void otPlatRadioSetIeeeEui64(otInstance *aInstance, const uint8_t *aIeeeEui64)
+{
+    OT_UNUSED_VARIABLE(aInstance);
+#if OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_ENABLE
+    const uint32_t *factoryAddress = (const uint32_t *)aIeeeEui64;
+
+    // Configure Factory Assigned Mac Address only if its UICR register is set to default value.
+    if ((NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG1] == 0xffffffff) &&
+        (NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG2] == 0xffffffff))
+    {
+        NRF_NVMC->CONFIG = NVMC_CONFIG_WEN_Wen;
+        while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+        {
+        }
+
+        NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG1] =
+            (NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG1] & ~((uint32_t)UICR_CUSTOMER_CUSTOMER_Msk)) |
+            (factoryAddress[1]);
+
+        NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG2] =
+            (NRF_UICR->CUSTOMER[OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG2] & ~((uint32_t)UICR_CUSTOMER_CUSTOMER_Msk)) |
+            (factoryAddress[0]);
+
+        NRF_NVMC->CONFIG = NVMC_CONFIG_WEN_Ren;
+        while (NRF_NVMC->READY == NVMC_READY_READY_Busy)
+        {
+        }
+
+        // System reset is needed to update UICR registers.
+        NVIC_SystemReset();
+    }
+#endif // OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_ENABLE
 }
 #endif // OPENTHREAD_CONFIG_ENABLE_PLATFORM_EUI64_CUSTOM_SOURCE
 

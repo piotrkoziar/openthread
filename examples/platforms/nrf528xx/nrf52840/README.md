@@ -267,14 +267,44 @@ See [mbedTls Thread Safety and Multi Threading][mbedtls-thread-safety-and-multi-
 When the Thread device is configured to obtain the Thread Network security credentials with either Thread Commissioning or an out-of-band method, the extended MAC address should be constructed out of the globally unique IEEE EUI-64.
 
 The IEEE EUI-64 address consists of two parts:
- - 24 bits of MA-L (MAC Address Block Large), formerly called OUI (Organizationally Unique Identifier)
+ - 24 bits of MA-L (MAC Address Block Large), formerly called OUI (Organizationally Unique Identifier). This value must be publicly registered by the IEEE Registration Authority.
  - 40-bit device unique identifier
 
-By default, the device uses Nordic Semiconductor's MA-L (f4-ce-36). You can modify it by overwriting the `OPENTHREAD_CONFIG_STACK_VENDOR_OUI` define, located in the `openthread-core-nrf52840-config.h` file. This value must be publicly registered by the IEEE Registration Authority.
+The IEEE EUI-64 address of the device is obtained by calling the `otPlatRadioGetIeeeEui64` function declared in the `include/openthread/platform/radio.h` file.
+The returned EUI-64 address by default consists of the Nordic Semiconductor's MA-L (f4-ce-36) and the identifier stored in the read-only non-volatile memory of the device.
+You can modify the IEEE EUI-64 address returned by the `otPlatRadioGetIeeeEui64` function in three ways:
 
-You can also provide the full IEEE EUI-64 address by providing a custom `otPlatRadioGetIeeeEui64` function. To do this, define the flag `OPENTHREAD_CONFIG_ENABLE_PLATFORM_EUI64_CUSTOM_SOURCE`.
+1. Use your own MA-L.
+2. Use EUI-64 address stored in the UICR registers.
+3. Use custom `otPlatRadioGetIeeeEui64` function implementation.
 
 After the Thread Network security credentials have been successfully obtained, the device uses randomly generated extended MAC address.
+
+#### Use your own MA-L
+
+To use your own MA-L, overwrite the value of the `OPENTHREAD_CONFIG_STACK_VENDOR_OUI` define, located in the `openthread-core-nrf52840-config.h` file.
+Note that this value must be publicly registered by the IEEE Registration Authority.
+
+#### Use EUI-64 stored in the UICR registers
+
+When using this feature, `otPlatRadioGetIeeeEui64` function first looks for the EUI-64 address in the specified UICR CUSTOMER registers. Since the UICR registers have size of 32 bits, the EUI-64 address is stored in two 32-bit parts.
+
+In order to put the EUI-64 address in the UICR registers, you can use the `otPlatRadioSetIeeeEui64` function.
+However, in this case, you must be aware that you can set the EUI-64 address only if the chosen UICR registers are erased.
+
+To enable this feature, do the following:
+
+  - define the `OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_ENABLE` flag.
+  - specify the chosen UICR registers by defining `OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG1=your_register_number1` and `OPENTHREAD_CONFIG_PLATFORM_EUI64_UICR_REG2=your_register_number2`.
+
+#### Use custom otPlatRadioGetIeeeEui64 function implementation
+
+In this case, only your custom `otPlatRadioGetIeeeEui64` and `otPlatRadioSetIeeeEui64` function implementations will be used.
+The implementation of the `otPlatRadioSetIeeeEui64` function is optional.
+
+In order to use your custom function implementations:
+
+  - define the flag `OPENTHREAD_CONFIG_ENABLE_PLATFORM_EUI64_CUSTOM_SOURCE`.
 
 ## Flashing the binaries
 
