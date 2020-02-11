@@ -32,6 +32,7 @@ lib_LIBRARIES                                                                   
     libopenthread-nrf52833.a                                                                                 \
     libopenthread-nrf52833-sdk.a                                                                             \
     libopenthread-nrf52833-softdevice-sdk.a                                                                  \
+    libopenthread-nrf52833-transport.a                                                                       \
     $(NULL)
 
 # Do not enable -pedantic-errors for nRF52833 driver library
@@ -116,9 +117,12 @@ PLATFORM_COMMON_SOURCES                                                         
     src/logging.c                                                                                            \
     src/misc.c                                                                                               \
     src/radio.c                                                                                              \
-    src/temp.c                                                                                               \
-    src/spi-slave.c                                                                                          \
     src/system.c                                                                                             \
+    src/temp.c                                                                                               \
+    $(NULL)
+
+TRANSPORT_SOURCES                                                                                          = \
+    src/spi-slave.c                                                                                          \
     src/uart.c                                                                                               \
     src/usb-cdc-uart.c                                                                                       \
     $(NULL)
@@ -171,6 +175,14 @@ libopenthread_nrf52833_softdevice_sdk_a_SOURCES                                 
     $(SOFTDEVICE_SOURCES)                                                                                    \
     $(NULL)
 
+libopenthread_nrf52833_transport_a_CPPFLAGS                                                                = \
+    $(COMMONCPPFLAGS)                                                                                        \
+    $(NULL)
+
+libopenthread_nrf52833_transport_a_SOURCES                                                                 = \
+    $(TRANSPORT_SOURCES)                                                                                     \
+    $(NULL)
+
 Dash                                                                                                       = -
 
 libopenthread_nrf52833_a_LIBADD                                                                            = \
@@ -181,6 +193,9 @@ libopenthread_nrf52833_sdk_a_LIBADD                                             
     $(shell find $(top_builddir)/examples/platforms/utils $(Dash)type f $(Dash)name "*.o")
 
 libopenthread_nrf52833_softdevice_sdk_a_LIBADD                                                             = \
+    $(shell find $(top_builddir)/examples/platforms/utils $(Dash)type f $(Dash)name "*.o")
+
+libopenthread_nrf52833_transport_a_LIBADD                                                                  = \
     $(shell find $(top_builddir)/examples/platforms/utils $(Dash)type f $(Dash)name "*.o")
 
 include $(abs_top_nlbuild_autotools_dir)/automake/post.am
