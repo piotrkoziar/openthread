@@ -32,7 +32,7 @@ lib_LIBRARIES                                                                   
     libopenthread-nrf52833.a                                                                                 \
     libopenthread-nrf52833-sdk.a                                                                             \
     libopenthread-nrf52833-softdevice-sdk.a                                                                  \
-    libopenthread-nrf52833-transport.a                                                                       \
+    libnordicsemi-nrf52833-transport.a                                                                       \
     $(NULL)
 
 # Do not enable -pedantic-errors for nRF52833 driver library
@@ -175,11 +175,11 @@ libopenthread_nrf52833_softdevice_sdk_a_SOURCES                                 
     $(SOFTDEVICE_SOURCES)                                                                                    \
     $(NULL)
 
-libopenthread_nrf52833_transport_a_CPPFLAGS                                                                = \
+libnordicsemi_nrf52833_transport_a_CPPFLAGS                                                                = \
     $(COMMONCPPFLAGS)                                                                                        \
     $(NULL)
 
-libopenthread_nrf52833_transport_a_SOURCES                                                                 = \
+libnordicsemi_nrf52833_transport_a_SOURCES                                                                 = \
     $(TRANSPORT_SOURCES)                                                                                     \
     $(NULL)
 
@@ -195,7 +195,7 @@ libopenthread_nrf52833_sdk_a_LIBADD                                             
 libopenthread_nrf52833_softdevice_sdk_a_LIBADD                                                             = \
     $(shell find $(top_builddir)/examples/platforms/utils $(Dash)type f $(Dash)name "*.o")
 
-libopenthread_nrf52833_transport_a_LIBADD                                                                  = \
+libnordicsemi_nrf52833_transport_a_LIBADD                                                                  = \
     $(shell find $(top_builddir)/examples/platforms/utils $(Dash)type f $(Dash)name "*.o")
 
 include $(abs_top_nlbuild_autotools_dir)/automake/post.am
