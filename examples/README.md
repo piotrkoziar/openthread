@@ -76,3 +76,9 @@ Enable this switch on the Border Router device (running on the NCP design) with 
 to service Thread Commissioner packets on the NCP side.
 
  - CHILD_SUPERVISION:
+      - If enabled:
+Functions in child supervision feature module are enabled.
+      - Typical use case:
+Parent or child node with custom OpenThread application that manages the supervision and checks timeout intervals.
+
+- DEBUG:
