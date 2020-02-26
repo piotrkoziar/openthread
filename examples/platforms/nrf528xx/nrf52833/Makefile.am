@@ -51,6 +51,7 @@ COMMONCPPFLAGS                                                                  
     -I$(top_srcdir)/include                                                                                  \
     -I$(top_srcdir)/examples/platforms                                                                       \
     -I$(top_srcdir)/examples/platforms/nrf528xx/src                                                          \
+    -I$(top_srcdir)/examples/platforms/nrf528xx/transport                                                    \
     -I$(top_srcdir)/src/core                                                                                 \
     -I$(top_srcdir)/third_party/NordicSemiconductor/drivers/radio                                            \
     -I$(top_srcdir)/third_party/NordicSemiconductor/drivers/radio/fem/three_pin_gpio                         \
@@ -122,9 +123,10 @@ PLATFORM_COMMON_SOURCES                                                         
     $(NULL)
 
 TRANSPORT_SOURCES                                                                                          = \
-    src/spi-slave.c                                                                                          \
-    src/uart.c                                                                                               \
-    src/usb-cdc-uart.c                                                                                       \
+    transport/spi-slave.c                                                                                    \
+    transport/uart.c                                                                                         \
+    transport/usb-cdc-uart.c                                                                                 \
+    transport/transport.c                                                                                    \
     $(NULL)
 
 SINGLEPHY_SOURCES                                                                                          = \
