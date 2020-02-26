@@ -27,7 +27,7 @@
 #
 
 # Use automake includes since we cannot use SUBDIRS feature due to  cleanup
-# errors - few targets may use the same source file but dependency file is 
+# errors - few targets may use the same source file but dependency file is
 # created only once which leads to errors when auto-generated Makefile tries
 # to remove .Po files that were already removed
 
@@ -48,6 +48,7 @@ include $(abs_top_nlbuild_autotools_dir)/automake/pre.am
 PRETTY_FILES                            = \
     src/platform-fem.h                    \
     src/platform-nrf5.h                   \
+    transport/platform-nrf5-transport.h   \
     $(wildcard $(srcdir)/**/*.c)          \
     $(wildcard $(srcdir)/**/*.h)          \
     $(NULL)
