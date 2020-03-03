@@ -31,7 +31,6 @@
  *   This file implements the nrf5 platform transport abstraction layer functions.
  *
  */
-#include "src/transport.h"
 
 #include "openthread-system.h"
 
