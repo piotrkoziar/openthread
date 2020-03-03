@@ -82,3 +82,126 @@ Functions in child supervision feature module are enabled.
 Parent or child node with custom OpenThread application that manages the supervision and checks timeout intervals.
 
 - DEBUG:
+   - If enabled:
+Debug instance is built. Code optimization is disabled.
+
+- DHCP6_CLIENT:
+   - If enabled:
+The device is able to act as typical DHCP client.
+   - Typical use case:
+Device that is supposed to request the DHCP server for networking parameters.
+
+- DHCP6_SERVER:
+The device is able to act as typical DHCP server.
+   - Typical use case:
+Device that is supposed to provide networking parameters to devices with DHCP_CLIENT switch enabled.
+
+ - DIAGNOSTIC:
+      - If enabled:
+ Functions in platform abstraction for diagnostics feature module are enabled.
+      - Typical use case:
+Device that is tested in the factory production stage.
+
+- DISABLE_DOC:
+   - If enabled:
+The documentation is not built.
+
+- DISABLE_TOOLS:
+   - If enabled:
+Tools are not built.
+
+- DNS_CLIENT:
+   - If enabled:
+
+   - Typical use case:
+
+- DYNAMIC_LOG_LEVEL:
+   - If enabled:
+
+   - Typical use case:
+
+- ECDSA:
+   - If enabled:
+
+   - Typical use case:
+
+- EXTERNAL_HEAP:
+   - If enabled:
+
+   - Typical use case:
+
+- IP6_FRAGM:
+   - If enabled:
+
+   - Typical use case:
+
+- JAM_DETECTION:
+   - If enabled:
+
+   - Typical use case:
+
+- JOINER:
+   - If enabled:
+
+   - Typical use case:
+
+- LEGACY:
+   - If enabled:
+
+   - Typical use case:
+
+- LINK_RAW:
+   - If enabled:
+
+   - Typical use case:
+
+- MAC_FILTER:
+   - If enabled:
+
+   - Typical use case:
+
+- MTD_NETDIAG:
+   - If enabled:
+
+   - Typical use case:
+
+- PLATFORM_UDP:
+   - If enabled:
+
+   - Typical use case:
+
+
+- REFERENCE_DEVICE:
+   - If enabled:
+
+   - Typical use case:
+
+- SERVICE:
+   - If enabled:
+
+   - Typical use case:
+
+- SETTINGS_RAM:
+   - If enabled:
+
+   - Typical use case:
+
+- SLAAC:
+   - If enabled:
+
+   - Typical use case:
+
+- SNTP_CLIENT:
+   - If enabled:
+
+   - Typical use case:
+
+- TIME_SYNC:
+   - If enabled:
+
+   - Typical use case:
+
+- UDP_FORWARD:
+   - If enabled:
+
+   - Typical use case:
