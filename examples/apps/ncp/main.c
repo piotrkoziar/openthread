@@ -89,6 +89,7 @@ int main(int argc, char *argv[])
 pseudo_reset:
 
     otSysInit(argc, argv);
+    otSysTransportInit(argc, argv);
 
 #if OPENTHREAD_CONFIG_MULTIPLE_INSTANCE_ENABLE
     // Call to query the buffer size
@@ -111,6 +112,7 @@ pseudo_reset:
     {
         otTaskletsProcess(instance);
         otSysProcessDrivers(instance);
+        otSysTransportProcessDrivers(instance);
     }
 
     otInstanceFinalize(instance);

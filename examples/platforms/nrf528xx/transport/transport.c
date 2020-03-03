@@ -31,15 +31,18 @@
  *   This file implements the nrf5 platform transport abstraction layer functions.
  *
  */
-
 #include "src/transport.h"
+
+#include "openthread-system.h"
+
 #include "platform-nrf5-transport.h"
 
+extern bool gPlatformPseudoResetWasRequested;
 
-void nrf5TransportInit(bool pseudoReset)
+static void nrf5TransportInit()
 {
 #if ((UART_AS_SERIAL_TRANSPORT == 1) || (USB_CDC_AS_SERIAL_TRANSPORT == 1))
-    if (!pseudoReset)
+    if (!gPlatformPseudoResetWasRequested)
     {
         nrf5UartInit();
     }
@@ -50,27 +53,25 @@ void nrf5TransportInit(bool pseudoReset)
 #endif
 
 #if (SPIS_AS_SERIAL_TRANSPORT == 1)
-    UNUSED_PARAMETER(pseudoReset);
     nrf5SpiSlaveInit();
 #endif
 }
 
-void nrf5TransportDeinit(bool pseudoReset)
+static void nrf5TransportDeinit()
 {
 #if ((UART_AS_SERIAL_TRANSPORT == 1) || (USB_CDC_AS_SERIAL_TRANSPORT == 1))
-    if (!pseudoReset)
+    if (!gPlatformPseudoResetWasRequested)
     {
         nrf5UartDeinit();
     }
 #endif
 
 #if (SPIS_AS_SERIAL_TRANSPORT == 1)
-    UNUSED_PARAMETER(pseudoReset);
     nrf5SpiSlaveDeinit();
 #endif
 }
 
-void nrf5TransportProcess(void)
+static void nrf5TransportProcess(void)
 {
 #if ((UART_AS_SERIAL_TRANSPORT == 1) || (USB_CDC_AS_SERIAL_TRANSPORT == 1))
     nrf5UartProcess();
@@ -78,4 +79,29 @@ void nrf5TransportProcess(void)
 #if (SPIS_AS_SERIAL_TRANSPORT == 1)
     nrf5SpiSlaveProcess();
 #endif
+}
+
+void otSysTransportInit(int argc, char *argv[])
+{
+    OT_UNUSED_VARIABLE(argc);
+    OT_UNUSED_VARIABLE(argv);
+
+    if (gPlatformPseudoResetWasRequested)
+    {
+        otSysTransportDeinit();
+    }
+
+    nrf5TransportInit();
+
+    gPlatformPseudoResetWasRequested = false;
+}
+
+void otSysTransportDeinit(void)
+{
+    nrf5TransportDeinit();
+}
+
+void otSysTransportProcessDrivers(otInstance *aInstance)
+{
+    nrf5TransportProcess();
 }
