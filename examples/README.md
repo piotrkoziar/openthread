@@ -211,3 +211,115 @@ The function in mbedtls module
    - If enabled:
 
    - Typical use case:
+   
+   measuring all switches
+BORDER_AGENT=1 BORDER_ROUTER=1 COAP=1 COAPS=1 COMMISSIONER=1 DEBUG=1 DHCP6_CLIENT=1
+DHCP6_SERVER=1 DIAGNOSTIC=1 DNS_CLIENT=1 ECDSA=1 EXTERNAL_HEAP=1 JOINER=1 LINK_RAW=1
+MAC_FILTER=1 MTD_NETDIAG=1 SERVICE=1 SNTP_CLIENT=1 UDP_FORWARD=1 CHANNEL_MANAGER=1
+CHANNEL_MONITOR=1 CHILD_SUPERVISION=1 JAM_DETECTION=1 IP6_FRAGM=1
+Size of all switches build: 610388
+
+measuring no switches
+Size of no switches build: 189452
+
+
+measuring BORDER_AGENT=1
+all but not mesured flag: 7168 bytes
+only mesured flag: -103012 bytes
+
+measuring BORDER_ROUTER=1
+all but not mesured flag: 5808 bytes
+only mesured flag: -3168 bytes
+
+measuring COAP=1
+additionally unsetting COAPS
+all but not mesured flag: 15944 bytes
+only mesured flag: -2672 bytes
+
+measuring COAPS=1
+all but not mesured flag: 11240 bytes
+additionally setting COAP
+only mesured flag: -111192 bytes
+
+measuring COMMISSIONER=1
+all but not mesured flag: 17600 bytes
+only mesured flag: -107940 bytes
+
+measuring DEBUG=1
+all but not mesured flag: 269484 bytes
+only mesured flag: -214968 bytes
+
+measuring DHCP6_CLIENT=1
+all but not mesured flag: 5104 bytes
+only mesured flag: -2128 bytes
+
+measuring DHCP6_SERVER=1
+all but not mesured flag: 4288 bytes
+only mesured flag: -1792 bytes
+
+measuring DIAGNOSTIC=1
+all but not mesured flag: 10080 bytes
+only mesured flag: -6872 bytes
+
+measuring DNS_CLIENT=1
+all but not mesured flag: 5056 bytes
+only mesured flag: -2112 bytes
+
+measuring ECDSA=1
+all but not mesured flag: 0 bytes
+only mesured flag: 0 bytes
+
+measuring EXTERNAL_HEAP=1
+all but not mesured flag: -1792 bytes
+only mesured flag: 736 bytes
+
+measuring JOINER=1
+all but not mesured flag: 5664 bytes
+only mesured flag: -102676 bytes
+
+measuring LINK_RAW=1
+all but not mesured flag: 800 bytes
+only mesured flag: -320 bytes
+
+measuring MAC_FILTER=1
+all but not mesured flag: 4880 bytes
+only mesured flag: -2208 bytes
+
+measuring MTD_NETDIAG=1
+all but not mesured flag: 0 bytes
+only mesured flag: 0 bytes
+
+measuring SERVICE=1
+all but not mesured flag: 4208 bytes
+only mesured flag: -2144 bytes
+
+measuring SNTP_CLIENT=1
+all but not mesured flag: 3888 bytes
+only mesured flag: -1760 bytes
+
+measuring UDP_FORWARD=1
+all but not mesured flag: 96 bytes
+only mesured flag: -48 bytes
+
+measuring CHANNEL_MANAGER=1
+all but not mesured flag: 5008 bytes
+additionally setting CHANNEL_MONITOR
+only mesured flag: -3328 bytes
+
+measuring CHANNEL_MONITOR=1
+additionally unsetting CHANNEL_MANAGER
+all but not mesured flag: 6928 bytes
+only mesured flag: -992 bytes
+
+measuring CHILD_SUPERVISION=1
+all but not mesured flag: 1360 bytes
+only mesured flag: -784 bytes
+
+measuring JAM_DETECTION=1
+all but not mesured flag: 1264 bytes
+only mesured flag: -640 bytes
+
+measuring IP6_FRAGM=1
+all but not mesured flag: 2656 bytes
+only mesured flag: -1072 bytes
+   
