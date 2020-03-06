@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2019, The OpenThread Authors.
+ *  Copyright (c) 2016, The OpenThread Authors.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,53 +28,52 @@
 
 /**
  * @file
- *   This file implements the nrf5 platform transport initialization functions.
+ *   This file includes UART/USB and SPI driver initializers.
  *
  */
 
-#include "platform-nrf5-transport.h"
+#ifndef TRANSPORT_DRIVERS_H_
+#define TRANSPORT_DRIVERS_H_
 
-#include "transport_drivers.h"
+/**
+ * Initialization of UART driver.
+ *
+ */
+void nrf5UartInit(void);
 
+/**
+ * Deinitialization of UART driver.
+ *
+ */
+void nrf5UartDeinit(void);
 
-void nrf5TransportInit(bool pseudoReset)
-{
-#if ((UART_AS_SERIAL_TRANSPORT == 1) || (USB_CDC_AS_SERIAL_TRANSPORT == 1))
-    if (!pseudoReset)
-    {
-        nrf5UartInit();
-    }
-    else
-    {
-        nrf5UartClearPendingData();
-    }
+/**
+ * Clear pending UART data.
+ *
+ */
+void nrf5UartClearPendingData(void);
+
+/**
+ * This function performs UART driver processing.
+ *
+ */
+void nrf5UartProcess(void);
+
+/**
+ * Initialization of SPI Slave driver.
+ *
+ */
+void nrf5SpiSlaveInit(void);
+
+/**
+ * Deinitialization of SPI Slave driver.
+ *
+ */
+void nrf5SpiSlaveDeinit(void);
+
+/**
+ * Function for processing SPI Slave driver.
+ */
+void nrf5SpiSlaveProcess(void);
+
 #endif
-
-#if (SPIS_AS_SERIAL_TRANSPORT == 1)
-    nrf5SpiSlaveInit();
-#endif
-}
-
-void nrf5TransportDeinit(bool pseudoReset)
-{
-#if ((UART_AS_SERIAL_TRANSPORT == 1) || (USB_CDC_AS_SERIAL_TRANSPORT == 1))
-    if (!pseudoReset)
-    {
-        nrf5UartDeinit();
-    }
-#endif
-
-#if (SPIS_AS_SERIAL_TRANSPORT == 1)
-    nrf5SpiSlaveDeinit();
-#endif
-}
-
-void nrf5TransportProcess(void)
-{
-#if ((UART_AS_SERIAL_TRANSPORT == 1) || (USB_CDC_AS_SERIAL_TRANSPORT == 1))
-    nrf5UartProcess();
-#endif
-#if (SPIS_AS_SERIAL_TRANSPORT == 1)
-    nrf5SpiSlaveProcess();
-#endif
-}
