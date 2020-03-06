@@ -99,7 +99,7 @@ void otSysInit(int argc, char *argv[])
         nrf5CryptoInit();
 #endif
     }
-
+    nrf5TransportInit(gPlatformPseudoResetWasRequested);
     nrf5MiscInit();
     nrf5RadioInit();
     nrf5TempInit();
@@ -122,6 +122,7 @@ void otSysDeinit(void)
         nrf5CryptoDeinit();
 #endif
     }
+    nrf5TransportDeinit(gPlatformPseudoResetWasRequested);
     nrf5RandomDeinit();
     nrf5AlarmDeinit();
 #if (OPENTHREAD_CONFIG_LOG_OUTPUT == OPENTHREAD_CONFIG_LOG_OUTPUT_PLATFORM_DEFINED) || \
@@ -142,6 +143,7 @@ bool otSysPseudoResetWasRequested(void)
 void otSysProcessDrivers(otInstance *aInstance)
 {
     nrf5RadioProcess(aInstance);
+    nrf5TransportProcess();
     nrf5TempProcess();
     nrf5AlarmProcess(aInstance);
 }

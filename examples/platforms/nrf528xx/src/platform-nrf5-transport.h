@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2016, The OpenThread Authors.
+ *  Copyright (c) 2017, The OpenThread Authors.
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,54 +28,33 @@
 
 /**
  * @file
- *   This file includes the nrf5 transport initializers.
+ *   This file includes the platform-specific transport initializers.
  *
  */
 
 #ifndef PLATFORM_NRF5_TRANSPORT_H_
 #define PLATFORM_NRF5_TRANSPORT_H_
 
+#include <stdbool.h>
+
 #include "platform-config.h"
 
 /**
- * Initialization of UART driver.
+ * Initialization of transport.
  *
  */
-void nrf5UartInit(void);
+void nrf5TransportInit(bool pseudoReset);
 
 /**
- * Deinitialization of UART driver.
+ * Deinitialization of transport.
  *
  */
-void nrf5UartDeinit(void);
+void nrf5TransportDeinit(bool pseudoReset);
 
 /**
- * Clear pending UART data.
+ * This function performs transport processing.
  *
  */
-void nrf5UartClearPendingData(void);
-
-/**
- * This function performs UART driver processing.
- *
- */
-void nrf5UartProcess(void);
-
-/**
- * Initialization of SPI Slave driver.
- *
- */
-void nrf5SpiSlaveInit(void);
-
-/**
- * Deinitialization of SPI Slave driver.
- *
- */
-void nrf5SpiSlaveDeinit(void);
-
-/**
- * Function for processing SPI Slave driver.
- */
-void nrf5SpiSlaveProcess(void);
+void nrf5TransportProcess(void);
 
 #endif
