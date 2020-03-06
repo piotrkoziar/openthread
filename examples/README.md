@@ -78,8 +78,10 @@ to service Thread Commissioner packets on the NCP side.
  - CHILD_SUPERVISION:
       - If enabled:
 Functions in child supervision feature module are enabled.
+Read more about the child supervision:
+https://openthread.io/guides/build/features/child-supervision
       - Typical use case:
-Parent or child node with custom OpenThread application that manages the supervision and checks timeout intervals.
+Parent or child node with custom OpenThread application that manages the supervision, checks timeout intervals and verifies connectivity between parent and child.
 
 - DEBUG:
    - If enabled:
@@ -112,17 +114,21 @@ Tools are not built.
 
 - DNS_CLIENT:
    - If enabled:
-
+Functions in DNS feature module are enabled.
    - Typical use case:
+Device that sends a DNS query for AAAA (IPv6) record.
 
 - DYNAMIC_LOG_LEVEL:
    - If enabled:
-
+Dynamic log level feature is enabled.
+Read more about logging:
+https://openthread.io/reference/group/api-logging
    - Typical use case:
+Device that sets the log level in runtime.
 
 - ECDSA:
    - If enabled:
-
+The function in mbedtls module
    - Typical use case:
 
 - EXTERNAL_HEAP:
