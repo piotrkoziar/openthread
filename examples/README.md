@@ -140,18 +140,23 @@ OpenThread application on platform that utilizes its own heap.
 
 - IP6_FRAGM:
    - If enabled:
-
-   - Typical use case:
+IPv6 fragmentation support is enabled.
 
 - JAM_DETECTION:
    - If enabled:
-
+Functions in jam detection feature module are enabled.
+Read more about jam detection:
+https://openthread.io/guides/build/features/jam-detection
    - Typical use case:
+OpenThread application on device involved in device certification that requires the ability to detect signal jamming on a specific channel.
 
 - JOINER:
    - If enabled:
-
+Functions for the Thread Joiner role are enabled.
+Read more about the joiner-api:
+https://openthread.io/reference/group/api-joiner
    - Typical use case:
+Device that requires the commissioning to join the network.
 
 - LEGACY:
    - If enabled:
