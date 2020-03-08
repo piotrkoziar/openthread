@@ -124,17 +124,19 @@ Dynamic log level feature is enabled.
 Read more about logging:
 https://openthread.io/reference/group/api-logging
    - Typical use case:
-Device that sets the log level in runtime.
+OpenThread application that sets the log level in runtime.
 
 - ECDSA:
    - If enabled:
-The function in mbedtls module
+The support for ECDSA is enabled in crypto module.
    - Typical use case:
+OpenThread application that uses ECDSA digital signature.
 
 - EXTERNAL_HEAP:
    - If enabled:
-
+The external heap CAlloc and Free functions to be used by the OpenThread stack must be specified.
    - Typical use case:
+OpenThread application on platform that utilizes its own heap.
 
 - IP6_FRAGM:
    - If enabled:
@@ -211,7 +213,7 @@ The function in mbedtls module
    - If enabled:
 
    - Typical use case:
-   
+
    measuring all switches
 BORDER_AGENT=1 BORDER_ROUTER=1 COAP=1 COAPS=1 COMMISSIONER=1 DEBUG=1 DHCP6_CLIENT=1
 DHCP6_SERVER=1 DIAGNOSTIC=1 DNS_CLIENT=1 ECDSA=1 EXTERNAL_HEAP=1 JOINER=1 LINK_RAW=1
@@ -322,4 +324,4 @@ only mesured flag: -640 bytes
 measuring IP6_FRAGM=1
 all but not mesured flag: 2656 bytes
 only mesured flag: -1072 bytes
-   
+
