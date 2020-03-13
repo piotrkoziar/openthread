@@ -34,7 +34,7 @@
 #include <utils/code_utils.h>
 
 #include "platform-nrf5.h"
-#include <nrf_802154_temperature.h>
+#include "nrf_802154_temperature.h"
 
 #if SOFTDEVICE_PRESENT
 #include "softdevice.h"
