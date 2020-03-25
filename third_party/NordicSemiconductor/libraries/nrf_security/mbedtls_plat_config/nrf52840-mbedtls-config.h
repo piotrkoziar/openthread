@@ -30,6 +30,8 @@
 #define NRF52840_MBEDTLS_CONFIG_H_
 
 #define MBEDTLS_PK_WRITE_C
+#define MBEDTLS_CHACHAPOLY_C
+#define MBEDTLS_SHA512_C
 
 #include <openthread/config.h>
 

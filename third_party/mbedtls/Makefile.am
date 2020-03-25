@@ -47,6 +47,7 @@ libmbedcrypto_a_SOURCES                       = \
     repo/library/base64.c                       \
     repo/library/bignum.c                       \
     repo/library/ccm.c                          \
+		repo/library/chachapoly.c                   \
     repo/library/cipher.c                       \
     repo/library/cipher_wrap.c                  \
     repo/library/cmac.c                         \
@@ -71,6 +72,7 @@ libmbedcrypto_a_SOURCES                       = \
     repo/library/platform.c                     \
     repo/library/platform_util.c                \
     repo/library/sha256.c                       \
+		repo/library/sha512.c                       \
     repo/library/ssl_cookie.c                   \
     repo/library/ssl_ciphersuites.c             \
     repo/library/ssl_cli.c                      \
