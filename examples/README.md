@@ -156,11 +156,11 @@ Functions for the Thread Joiner role are enabled.
 Read more about the joiner-api:
 https://openthread.io/reference/group/api-joiner
    - Typical use case:
-Device that requires the commissioning to join the network.
+Device that has to be commissioned to join the network.
 
 - LEGACY:
    - If enabled:
-
+NCP code supports legacy network.
    - Typical use case:
 
 - LINK_RAW:
