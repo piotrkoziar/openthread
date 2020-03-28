@@ -912,8 +912,8 @@ otError NetworkDiagnostic::GetNextDiagTlv(const otMessage &      aMessage,
             VerifyOrExit(networkData.IsValid());
             VerifyOrExit(sizeof(aNetworkDiagTlv.mNetworkData) >= networkData.GetLength());
 
-            memcpy(aNetworkDiagTlv.mNetworkData, networkData.GetNetworkData(), networkData.GetLength());
-            aNetworkDiagTlv.mNetworkDataCount = networkData.GetLength();
+            memcpy(aNetworkDiagTlv.mNetworkData.m8, networkData.GetNetworkData(), networkData.GetLength());
+            aNetworkDiagTlv.mNetworkData.mLength = networkData.GetLength();
             ExitNow(error = OT_ERROR_NONE);
             break;
         }
@@ -923,11 +923,11 @@ otError NetworkDiagnostic::GetNextDiagTlv(const otMessage &      aMessage,
             Ip6AddressListTlv &ip6AddrList = static_cast<Ip6AddressListTlv &>(tlv);
 
             VerifyOrExit(ip6AddrList.IsValid());
-            VerifyOrExit(sizeof(aNetworkDiagTlv.mIp6AddrList) >= ip6AddrList.GetLength());
+            VerifyOrExit(sizeof(aNetworkDiagTlv.mAddrData.mIp6AddrList) >= ip6AddrList.GetLength());
             VerifyOrExit(message.Read(offset + sizeof(ip6AddrList), ip6AddrList.GetLength(),
-                                      aNetworkDiagTlv.mIp6AddrList) == ip6AddrList.GetLength());
+                                      aNetworkDiagTlv.mAddrData.mIp6AddrList) == ip6AddrList.GetLength());
 
-            aNetworkDiagTlv.mIp6AddrCount = ip6AddrList.GetLength() / OT_IP6_ADDRESS_SIZE;
+            aNetworkDiagTlv.mAddrData.mIp6AddrCount = ip6AddrList.GetLength() / OT_IP6_ADDRESS_SIZE;
             ExitNow(error = OT_ERROR_NONE);
             break;
         }
@@ -976,26 +976,26 @@ otError NetworkDiagnostic::GetNextDiagTlv(const otMessage &      aMessage,
             ChildTableTlv &childTable = static_cast<ChildTableTlv &>(tlv);
 
             VerifyOrExit(childTable.IsValid());
-            VerifyOrExit(childTable.GetNumEntries() <= OT_ARRAY_LENGTH(aNetworkDiagTlv.mChildTable));
+            VerifyOrExit(childTable.GetNumEntries() <= OT_ARRAY_LENGTH(aNetworkDiagTlv.mChildData.mChildTable));
 
             for (uint8_t i = 0; i < childTable.GetNumEntries(); ++i)
             {
                 ChildTableEntry childEntry;
                 VerifyOrExit(childTable.ReadEntry(childEntry, message, offset, i) == OT_ERROR_NONE);
-                ParseChildEntry(childEntry, aNetworkDiagTlv.mChildTable[i]);
+                ParseChildEntry(childEntry, aNetworkDiagTlv.mChildData.mChildTable[i]);
             }
-            aNetworkDiagTlv.mChildCount = childTable.GetNumEntries();
+            aNetworkDiagTlv.mChildData.mChildCount = childTable.GetNumEntries();
             ExitNow(error = OT_ERROR_NONE);
             break;
         }
 
         case NetworkDiagnosticTlv::kChannelPages:
         {
-            VerifyOrExit(sizeof(aNetworkDiagTlv.mChannelPages) >= tlv.GetLength());
-            VerifyOrExit(message.Read(offset + sizeof(tlv), tlv.GetLength(), aNetworkDiagTlv.mChannelPages) ==
+            VerifyOrExit(sizeof(aNetworkDiagTlv.mChannelPagesData.mLength) >= tlv.GetLength());
+            VerifyOrExit(message.Read(offset + sizeof(tlv), tlv.GetLength(), aNetworkDiagTlv.mChannelPagesData.m8) ==
                          tlv.GetLength());
 
-            aNetworkDiagTlv.mChannelPageCount = tlv.GetLength();
+            aNetworkDiagTlv.mChannelPagesData.mLength = tlv.GetLength();
             ExitNow(error = OT_ERROR_NONE);
             break;
         }

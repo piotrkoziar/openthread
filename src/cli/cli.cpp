@@ -3934,16 +3934,16 @@ void Interpreter::HandleDiagnosticGetResponse(const otMessage &aMessage, const I
             break;
         case OT_NETWORK_DIAGNOSTIC_TLV_NETWORK_DATA:
             mServer->OutputFormat("Network Data: '");
-            OutputBytes(diagTlv.mNetworkData, diagTlv.mNetworkDataCount);
+            OutputBytes(diagTlv.mNetworkData.m8, diagTlv.mNetworkData.mLength);
             mServer->OutputFormat("'\r\n");
             break;
         case OT_NETWORK_DIAGNOSTIC_TLV_IP6_ADDR_LIST:
             mServer->OutputFormat("IP6 Address List:\r\n");
-            for (uint16_t i = 0; i < diagTlv.mIp6AddrCount; ++i)
+            for (uint16_t i = 0; i < diagTlv.mAddrData.mIp6AddrCount; ++i)
             {
                 OutputSpaces(column + INDENT_SIZE);
                 mServer->OutputFormat("- ");
-                OutputIp6Address(diagTlv.mIp6AddrList[i]);
+                OutputIp6Address(diagTlv.mAddrData.mIp6AddrList[i]);
                 mServer->OutputFormat("\r\n");
             }
             break;
@@ -3959,16 +3959,16 @@ void Interpreter::HandleDiagnosticGetResponse(const otMessage &aMessage, const I
             break;
         case OT_NETWORK_DIAGNOSTIC_TLV_CHILD_TABLE:
             mServer->OutputFormat("Child Table:\r\n");
-            for (uint16_t i = 0; i < diagTlv.mChildCount; ++i)
+            for (uint16_t i = 0; i < diagTlv.mChildData.mChildCount; ++i)
             {
                 OutputSpaces(column + INDENT_SIZE);
                 mServer->OutputFormat("- ");
-                OutputChildTableEntry(diagTlv.mChildTable[i], column + INDENT_SIZE + 2);
+                OutputChildTableEntry(diagTlv.mChildData.mChildTable[i], column + INDENT_SIZE + 2);
             }
             break;
         case OT_NETWORK_DIAGNOSTIC_TLV_CHANNEL_PAGES:
             mServer->OutputFormat("Channel Pages: '");
-            OutputBytes(diagTlv.mChannelPages, diagTlv.mChannelPageCount);
+            OutputBytes(diagTlv.mChannelPagesData.m8, diagTlv.mChannelPagesData.mLength);
             mServer->OutputFormat("'\r\n");
             break;
         case OT_NETWORK_DIAGNOSTIC_TLV_MAX_CHILD_TIMEOUT:

@@ -214,6 +214,75 @@ typedef struct otNetworkDiagChildEntry
 } otNetworkDiagChildEntry;
 
 /**
+ * This structure represents a Network Diagnostic Child Data value.
+ *
+ */
+typedef struct otNetworkDiagChildData
+{
+    /**
+     * Number of elements in #mChildTable.
+     */
+    uint8_t mChildCount;
+
+    /**
+     * Child data.
+     */
+    otNetworkDiagChildEntry
+        mChildTable[OT_NETWORK_BASE_TLV_MAX_LENGTH / OT_NETWORK_DIAGNOSTIC_CHILD_TABLE_ENTRY_SIZE];
+} otNetworkDiagChildData;
+
+/**
+ * This structure represents a Network Diagnostic Network Data value.
+ *
+ */
+typedef struct otNetworkDiagNetworkData
+{
+    /**
+     * Number of bytes of network data.
+     */
+    uint8_t mLength;
+
+    /**
+     * Network data bytes.
+     */
+    uint8_t m8[OT_NETWORK_BASE_TLV_MAX_LENGTH];
+} otNetworkDiagNetworkData;
+
+/**
+ * This structure represents a Network Diagnostic Address Data value.
+ *
+ */
+typedef struct otNetworkDiagAddrData
+{
+    /**
+     * Number of elements in #mIp6AddrList.
+     */
+    uint8_t mIp6AddrCount;
+
+    /**
+     * List of IPv6 addresses.
+     */
+    otIp6Address mIp6AddrList[OT_NETWORK_BASE_TLV_MAX_LENGTH / OT_IP6_ADDRESS_SIZE];
+} otNetworkDiagAddrData;
+
+/**
+ * This structure represents a Network Diagnostic Channel Pages Data value.
+ *
+ */
+typedef struct otNetworkDiagChannelPagesData
+{
+    /**
+     * Number of bytes of channel pages data.
+     */
+    uint8_t mLength;
+
+    /**
+     * Channel Pages data.
+     */
+    uint8_t m8[OT_NETWORK_BASE_TLV_MAX_LENGTH];
+} otNetworkDiagChannelPagesData;
+
+/**
  * This structure represents a Network Diagnostic TLV.
  *
  */
@@ -226,38 +295,21 @@ typedef struct otNetworkDiagTlv
 
     union
     {
-        otExtAddress              mExtAddress;
-        uint16_t                  mAddr16;
-        otLinkModeConfig          mMode;
-        uint32_t                  mTimeout;
-        otNetworkDiagConnectivity mConnectivity;
-        otNetworkDiagRoute        mRoute;
-        otLeaderData              mLeaderData;
-        otNetworkDiagMacCounters  mMacCounters;
-        uint8_t                   mBatteryLevel;
-        uint16_t                  mSupplyVoltage;
-        uint32_t                  mMaxChildTimeout;
-        struct
-        {
-            uint8_t mNetworkDataCount;
-            uint8_t mNetworkData[OT_NETWORK_BASE_TLV_MAX_LENGTH];
-        };
-        struct
-        {
-            uint8_t      mIp6AddrCount;
-            otIp6Address mIp6AddrList[OT_NETWORK_BASE_TLV_MAX_LENGTH / OT_IP6_ADDRESS_SIZE];
-        };
-        struct
-        {
-            uint8_t mChildCount;
-            otNetworkDiagChildEntry
-                mChildTable[OT_NETWORK_BASE_TLV_MAX_LENGTH / OT_NETWORK_DIAGNOSTIC_CHILD_TABLE_ENTRY_SIZE];
-        };
-        struct
-        {
-            uint8_t mChannelPageCount;
-            uint8_t mChannelPages[OT_NETWORK_BASE_TLV_MAX_LENGTH];
-        };
+        otExtAddress                  mExtAddress;
+        uint16_t                      mAddr16;
+        otLinkModeConfig              mMode;
+        uint32_t                      mTimeout;
+        otNetworkDiagConnectivity     mConnectivity;
+        otNetworkDiagRoute            mRoute;
+        otLeaderData                  mLeaderData;
+        otNetworkDiagMacCounters      mMacCounters;
+        uint8_t                       mBatteryLevel;
+        uint16_t                      mSupplyVoltage;
+        uint32_t                      mMaxChildTimeout;
+        otNetworkDiagNetworkData      mNetworkData;
+        otNetworkDiagAddrData         mAddrData;
+        otNetworkDiagChildData        mChildData;
+        otNetworkDiagChannelPagesData mChannelPagesData;
     };
 } otNetworkDiagTlv;
 
