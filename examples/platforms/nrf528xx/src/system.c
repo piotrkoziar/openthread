@@ -73,7 +73,7 @@ void otSysInit(int argc, char *argv[])
         otSysDeinit();
     }
 
-#if ((!SOFTDEVICE_PRESENT) && (NRF52840_XXAA))
+#if (((!SOFTDEVICE_PRESENT) && (NRF52840_XXAA)) || (NRF52833_XXAA))
     // Enable I-code cache
     NRF_NVMC->ICACHECNF = NVMC_ICACHECNF_CACHEEN_Enabled;
 #elif (DCDC_ENABLE)
