@@ -38,6 +38,8 @@
 
 #include <string.h>
 
+#include <openthread/platform/toolchain.h>
+
 namespace ot {
 
 /**
@@ -49,7 +51,9 @@ namespace ot {
  * from `Equatable<Type>`.
  *
  */
-template <class Type> class Equatable
+template <class Type>
+OT_TOOL_PACKED_BEGIN
+class Equatable
 {
 public:
     /**
@@ -73,7 +77,7 @@ public:
      *
      */
     bool operator!=(const Type &aOther) const { return !(*this == aOther); }
-};
+} OT_TOOL_PACKED_END;
 
 } // namespace ot
 

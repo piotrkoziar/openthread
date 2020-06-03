@@ -38,6 +38,8 @@
 
 #include <string.h>
 
+#include <openthread/platform/toolchain.h>
+
 namespace ot {
 
 /**
@@ -49,11 +51,13 @@ namespace ot {
  * from `Clearable<Type>`.
  *
  */
-template <typename Type> class Clearable
+template <typename Type>
+OT_TOOL_PACKED_BEGIN
+class Clearable
 {
 public:
     void Clear(void) { memset(reinterpret_cast<void *>(this), 0, sizeof(Type)); }
-};
+} OT_TOOL_PACKED_END;
 
 } // namespace ot
 
