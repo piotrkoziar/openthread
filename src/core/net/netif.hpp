@@ -66,8 +66,8 @@ class Ip6;
  *
  */
 class NetifUnicastAddress : public otNetifAddress,
-                            public LinkedListEntry<NetifUnicastAddress>,
-                            public Clearable<NetifUnicastAddress>
+                            public Clearable<NetifUnicastAddress>,
+                            public LinkedListEntry<NetifUnicastAddress>
 {
     friend class Netif;
 
