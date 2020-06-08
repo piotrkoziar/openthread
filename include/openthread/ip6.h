@@ -101,7 +101,7 @@ typedef struct otIp6Prefix otIp6Prefix;
  * This structure represents an IPv6 network interface unicast address.
  *
  */
-typedef struct otNetifAddress
+typedef OT_TOOL_PACKED_BEGIN struct otNetifAddress
 {
     otIp6Address           mAddress;                ///< The IPv6 unicast address.
     uint8_t                mPrefixLength;           ///< The Prefix length (in bits).
@@ -111,17 +111,17 @@ typedef struct otNetifAddress
     unsigned int           mScopeOverride : 4;      ///< The IPv6 scope of this address.
     bool                   mRloc : 1;               ///< TRUE if the address is an RLOC, FALSE otherwise.
     struct otNetifAddress *mNext;                   ///< A pointer to the next network interface address.
-} otNetifAddress;
+} OT_TOOL_PACKED_END otNetifAddress;
 
 /**
  * This structure represents an IPv6 network interface multicast address.
  *
  */
-typedef struct otNetifMulticastAddress
+typedef OT_TOOL_PACKED_BEGIN struct otNetifMulticastAddress
 {
     otIp6Address                          mAddress; ///< The IPv6 multicast address.
     const struct otNetifMulticastAddress *mNext;    ///< A pointer to the next network interface multicast address.
-} otNetifMulticastAddress;
+} OT_TOOL_PACKED_END otNetifMulticastAddress;
 
 /**
  * This structure represents an IPv6 socket address.

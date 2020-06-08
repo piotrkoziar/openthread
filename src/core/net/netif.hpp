@@ -65,10 +65,9 @@ class Ip6;
  * This class implements an IPv6 network interface unicast address.
  *
  */
-OT_TOOL_PACKED_BEGIN
 class NetifUnicastAddress : public otNetifAddress,
-                            public Clearable<NetifUnicastAddress>,
-                            public LinkedListEntry<NetifUnicastAddress>
+                            public LinkedListEntry<NetifUnicastAddress>,
+                            public Clearable<NetifUnicastAddress>
 {
     friend class Netif;
 
@@ -105,7 +104,7 @@ private:
     // list), the next pointer is set to point back to the entry itself.
     bool IsInUse(void) const { return GetNext() != this; }
     void MarkAsNotInUse(void) { SetNext(this); }
-} OT_TOOL_PACKED_END;
+};
 
 /**
  * This class implements an IPv6 network interface multicast address.
