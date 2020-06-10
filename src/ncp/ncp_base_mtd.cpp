@@ -1620,9 +1620,11 @@ template <> otError NcpBase::HandlePropertyInsert<SPINEL_PROP_IPV6_ADDRESS_TABLE
     otNetifAddress netifAddr;
     uint32_t       preferredLifetime;
     uint32_t       validLifetime;
+    uint8_t        prefixLength;
 
     SuccessOrExit(error = mDecoder.ReadIp6Address(netifAddr.mAddress));
-    SuccessOrExit(error = mDecoder.ReadUint8(netifAddr.mPrefixLength));
+    SuccessOrExit(error = mDecoder.ReadUint8(prefixLength));
+    netifAddr.mPrefixLength = prefixLength;
     SuccessOrExit(error = mDecoder.ReadUint32(preferredLifetime));
     SuccessOrExit(error = mDecoder.ReadUint32(validLifetime));
 
