@@ -61,7 +61,6 @@ namespace Ip6 {
  * This class implements an IPv6 address object.
  *
  */
-OT_TOOL_PACKED_BEGIN
 class Address : public otIp6Address, public Equatable<Address>, public Clearable<Address>
 {
 public:
@@ -558,7 +557,7 @@ private:
         kMulticastNetworkPrefixLengthOffset = 3, ///< Prefix-Based Multicast Address (RFC3306).
         kMulticastNetworkPrefixOffset       = 4, ///< Prefix-Based Multicast Address (RFC3306).
     };
-} OT_TOOL_PACKED_END;
+};
 
 /**
  * @}

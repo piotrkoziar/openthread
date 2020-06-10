@@ -882,7 +882,6 @@ struct StatusTlv
  * This class implements Source Address TLV generation and parsing.
  *
  */
-OT_TOOL_PACKED_BEGIN
 class AddressRegistrationEntry
 {
 public:
@@ -970,8 +969,8 @@ private:
     {
         uint8_t      mIid[Ip6::Address::kInterfaceIdentifierSize];
         Ip6::Address mIp6Address;
-    } OT_TOOL_PACKED_FIELD;
-} OT_TOOL_PACKED_END;
+    };
+};
 
 /**
  * This class implements Channel TLV generation and parsing.

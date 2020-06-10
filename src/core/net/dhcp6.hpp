@@ -454,7 +454,6 @@ private:
     uint32_t mT2;   ///< T2
 } OT_TOOL_PACKED_END;
 
-OT_TOOL_PACKED_BEGIN
 class IaAddress : public Dhcp6Option
 {
 public:
@@ -520,7 +519,7 @@ private:
     Ip6::Address mAddress;           ///< IPv6 address
     uint32_t     mPreferredLifetime; ///< Preferred Lifetime
     uint32_t     mValidLifetime;     ///< Valid Lifetime
-} OT_TOOL_PACKED_END;
+};
 
 OT_TOOL_PACKED_BEGIN
 class ElapsedTime : public Dhcp6Option
