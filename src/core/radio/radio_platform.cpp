@@ -33,6 +33,8 @@
 #include <openthread/instance.h>
 #include <openthread/platform/time.h>
 
+#include <stdint.h>
+
 #include "common/instance.hpp"
 #include "radio/radio.hpp"
 
