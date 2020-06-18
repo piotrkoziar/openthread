@@ -35,6 +35,10 @@
 #ifndef OPENTHREAD_PLATFORM_TIME_H_
 #define OPENTHREAD_PLATFORM_TIME_H_
 
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
+
 #include <stdint.h>
 
 #ifdef __cplusplus
