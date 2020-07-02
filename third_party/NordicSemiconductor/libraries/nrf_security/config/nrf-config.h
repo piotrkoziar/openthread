@@ -55,7 +55,7 @@
  * Required by:
  *      MBEDTLS_AESNI_C
  *      MBEDTLS_PADLOCK_C
- *
+ * 
  * Comment to disable the use of assembly code.
  */
 #define MBEDTLS_HAVE_ASM
@@ -323,7 +323,7 @@
 //#define MBEDTLS_MD5_ALT
 #define MBEDTLS_POLY1305_ALT
 //#define MBEDTLS_RIPEMD160_ALT
-#define MBEDTLS_ECP_ALT
+/* #undef MBEDTLS_ECP_ALT */
 /* #undef MBEDTLS_RSA_ALT */
 #define MBEDTLS_SHA1_ALT
 #define MBEDTLS_SHA256_ALT
@@ -390,11 +390,11 @@
 //#define MBEDTLS_AES_SETKEY_DEC_ALT
 //#define MBEDTLS_AES_ENCRYPT_ALT
 //#define MBEDTLS_AES_DECRYPT_ALT
-#define MBEDTLS_ECDH_GEN_PUBLIC_ALT
-#define MBEDTLS_ECDH_COMPUTE_SHARED_ALT
-#define MBEDTLS_ECDSA_VERIFY_ALT
-#define MBEDTLS_ECDSA_SIGN_ALT
-#define MBEDTLS_ECDSA_GENKEY_ALT
+/* #undef MBEDTLS_ECDH_GEN_PUBLIC_ALT */
+/* #undef MBEDTLS_ECDH_COMPUTE_SHARED_ALT */
+/* #undef MBEDTLS_ECDSA_VERIFY_ALT */
+/* #undef MBEDTLS_ECDSA_SIGN_ALT */
+/* #undef MBEDTLS_ECDSA_GENKEY_ALT */
 
 /**
  * \def MBEDTLS_ECP_INTERNAL_ALT
@@ -653,15 +653,15 @@
  *
  * Comment macros to disable the curve and functions for it
  */
-/* #undef MBEDTLS_ECP_DP_SECP192R1_ENABLED */
-/* #undef MBEDTLS_ECP_DP_SECP224R1_ENABLED */
+#define MBEDTLS_ECP_DP_SECP192R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP224R1_ENABLED
 #define MBEDTLS_ECP_DP_SECP256R1_ENABLED
-/* #undef MBEDTLS_ECP_DP_SECP384R1_ENABLED */
-/* #undef MBEDTLS_ECP_DP_SECP521R1_ENABLED */
-/* #undef MBEDTLS_ECP_DP_SECP192K1_ENABLED */
-/* #undef MBEDTLS_ECP_DP_SECP224K1_ENABLED */
-/* #undef MBEDTLS_ECP_DP_SECP256K1_ENABLED */
-/* #undef MBEDTLS_ECP_DP_BP256R1_ENABLED */
+#define MBEDTLS_ECP_DP_SECP384R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP521R1_ENABLED
+#define MBEDTLS_ECP_DP_SECP192K1_ENABLED
+#define MBEDTLS_ECP_DP_SECP224K1_ENABLED
+#define MBEDTLS_ECP_DP_SECP256K1_ENABLED
+#define MBEDTLS_ECP_DP_BP256R1_ENABLED
 /* #undef MBEDTLS_ECP_DP_BP384R1_ENABLED */
 /* #undef MBEDTLS_ECP_DP_BP512R1_ENABLED */
 /* #undef MBEDTLS_ECP_DP_CURVE25519_ENABLED */
@@ -1141,7 +1141,7 @@
  *
  * Do not use the Chinese Remainder Theorem
  * for the RSA private operation.
- *
+ * 
  * Uncomment this macro to disable the use of CRT in RSA.
  *
  */
@@ -2613,7 +2613,7 @@
  * \warning   SHA-1 is considered a weak message digest and its use constitutes
  *            a security risk. If possible, we recommend avoiding dependencies
  *            on it, and considering stronger message digests instead.
- *
+ * 
  */
 #define MBEDTLS_SHA1_C
 
@@ -3144,10 +3144,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 #define CONFIG_CC310_MBEDTLS_CIPHER_MODE_C
 #define CONFIG_CC310_MBEDTLS_CMAC_C
 #define CONFIG_CC310_MBEDTLS_DHM_C
-#define CONFIG_CC310_MBEDTLS_ECDH_C
-#define CONFIG_CC310_MBEDTLS_ECDSA_C
 #define CONFIG_CC310_MBEDTLS_ECJPAKE_C
-#define CONFIG_CC310_MBEDTLS_ECP_C
 #define CONFIG_CC310_MBEDTLS_POLY1305_C
 #define CONFIG_CC310_MBEDTLS_SHA1_C
 #define CONFIG_CC310_MBEDTLS_SHA256_C
@@ -3157,6 +3154,9 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 #define CONFIG_VANILLA_MBEDTLS_AES_C
 #define CONFIG_VANILLA_MBEDTLS_C
 #define CONFIG_VANILLA_MBEDTLS_CIPHER_MODE_C
+#define CONFIG_VANILLA_MBEDTLS_ECDH_C
+#define CONFIG_VANILLA_MBEDTLS_ECDSA_C
+#define CONFIG_VANILLA_MBEDTLS_ECP_C
 
 //#define YOTTA_CFG_MBEDTLS_TARGET_CONFIG_FILE "target_config.h"
 
@@ -3198,8 +3198,7 @@ it is (2^48 - 1), our restriction is :  (int - 0xFFFF - 0xF).*/
 /*
  * Nordic added. Ensure there is a definition of mbedtls_ecp_restart_ctx
  */
-#if defined(MBEDTLS_ECP_ALT) && !defined(MBEDTLS_ECP_RESTARTABLE) && !defined(MBEDTLS_ECP_RESTART_CTX_DECLARED)
-#define MBEDTLS_ECP_RESTART_CTX_DECLARED
+#if defined(MBEDTLS_ECP_ALT) && !defined(MBEDTLS_ECP_RESTARTABLE)
 typedef void mbedtls_ecp_restart_ctx;
 #endif
 
