@@ -31,9 +31,9 @@ set -euo pipefail
 
 readonly OT_TMP_DIR=/tmp/ot-size-report
 readonly OT_SHA_NEW=${GITHUB_SHA:-$(git rev-parse HEAD)}
-readonly OT_SHA_OLD="$(git cat-file -p "${OT_SHA_NEW}" | grep 'parent ' | head -n1 | cut -d' ' -f2)"
-readonly OT_REPORT_FILE=/home/piko/size_measurement_ot/size_report
-
+# readonly OT_SHA_OLD="$(git cat-file -p "${OT_SHA_NEW}" | grep 'parent ' | head -n1 | cut -d' ' -f2)"
+readonly OT_REPORT_FOLDER=/home/piko/size_measurement_ot
+readonly OT_REPORT_FILE=size_report
 setup_arm_gcc_7()
 {
     if arm-none-eabi-gcc --version | grep -q 'Arm Embedded Processors 7'; then
@@ -76,8 +76,8 @@ markdown_size()
         fi
     done
 
-    echo "| ${name} | -${OT_SHA_OLD:0:7} | ${size_old[0]} | ${size_old[1]} | ${size_old[2]} | ${size_old[3]} |"
-    echo "|  | +${OT_SHA_NEW:0:7} | ${size_new[0]} | ${size_new[1]} | ${size_new[2]} | ${size_new[3]} |"
+    echo "| ${name} | reference build | ${size_old[0]} | ${size_old[1]} | ${size_old[2]} | ${size_old[3]} |"
+    echo "|  | with specified flags | ${size_new[0]} | ${size_new[1]} | ${size_new[2]} | ${size_new[3]} |"
     echo "|  | +/- | ${size_diff[0]} | ${size_diff[1]} | ${size_diff[2]} | ${size_diff[3]} |"
 }
 
@@ -86,16 +86,36 @@ markdown()
     case "$1" in
         init)
             shift
-            markdown_init "$@" >"${OT_REPORT_FILE}"
+            markdown_init "$@" >"${OT_REPORT_FOLDER}/${OT_REPORT_FILE}"
             ;;
         size)
             shift
-            markdown_size "$@" >>"${OT_REPORT_FILE}"
+            markdown_size "$@" >>"${OT_REPORT_FOLDER}/${OT_REPORT_FILE}"
             ;;
         post)
-            mdv "${OT_REPORT_FILE}"
+            mdv "${OT_REPORT_FOLDER}/${OT_REPORT_FILE}"
             ;;
     esac
+}
+
+
+size_nrf52840_prepare_reference_build()
+{
+    if [ $# -eq 0 ]; then
+        local flags=''
+        echo "reference build with no flags"
+    else
+        local flags=("${!1}")
+        echo "reference build with flags ${flags[@]}"
+    fi
+
+    rm -rf "${OT_TMP_DIR}/a"
+
+    mkdir -p "${OT_TMP_DIR}/a"
+    git archive "${OT_SHA_NEW}" | tar x -C "${OT_TMP_DIR}/a"
+    (cd "${OT_TMP_DIR}/a" \
+        && ./bootstrap \
+        && make -f examples/Makefile-nrf52840 ${flags[@]}) > /dev/null 2>&1
 }
 
 size_nrf52840()
@@ -108,7 +128,7 @@ size_nrf52840()
         echo "build with flags ${flags[@]}"
     fi
 
-    rm -rf "${OT_TMP_DIR}"
+    rm -rf "${OT_TMP_DIR}/b"
 
     # new commit
     mkdir -p "${OT_TMP_DIR}/b"
@@ -116,18 +136,18 @@ size_nrf52840()
 
     (cd "${OT_TMP_DIR}/b" \
         && ./bootstrap \
-        && make -f examples/Makefile-nrf52840 ${flags[@]}) # > /dev/null 2>&1
+        && make -f examples/Makefile-nrf52840 ${flags[@]}) #> /dev/null 2>&1
 
     # old commit
-    if [[ "${GITHUB_ACTIONS+x}" ]]; then
-        git fetch --depth 1 --no-recurse-submodules origin "${OT_SHA_OLD}"
-    fi
+    # if [[ "${GITHUB_ACTIONS+x}" ]]; then
+    #     git fetch --depth 1 --no-recurse-submodules origin "${OT_SHA_OLD}"
+    # fi
 
-    mkdir -p "${OT_TMP_DIR}/a"
-    git archive "${OT_SHA_OLD}" | tar x -C "${OT_TMP_DIR}/a"
-    (cd "${OT_TMP_DIR}/a" \
-        && ./bootstrap \
-        && make -f examples/Makefile-nrf52840 ${flags[@]}) > /dev/null 2>&1
+    # mkdir -p "${OT_TMP_DIR}/a"
+    # git archive "${OT_SHA_OLD}" | tar x -C "${OT_TMP_DIR}/a"
+    # (cd "${OT_TMP_DIR}/a" \
+    #     && ./bootstrap \
+    #     && make -f examples/Makefile-nrf52840 ${flags[@]}) > /dev/null 2>&1
 
     local reporter
 
@@ -138,7 +158,7 @@ size_nrf52840()
         reporter=./size-report
         curl -s --retry 5 "${SIZE_REPORT_URL}/bash" >size-report
         chmod a+x size-report
-        export OT_SHA_NEW OT_SHA_OLD
+        # export OT_SHA_NEW OT_SHA_OLD
     fi
 
     "${reporter}" init OpenThread
@@ -161,10 +181,106 @@ size_nrf52840()
     "${reporter}" post
 }
 
+print_size_reports()
+{
+    for file in ${OT_REPORT_FOLDER}/*; do
+        switchname=`echo ${file#"${OT_REPORT_FOLDER}/${OT_REPORT_FILE}_"}`
+        if [ -z "$switchname" ]; then
+            continue
+        fi
+
+        size_text=`tail -n+5 $file | head -n 1 | cut -d "|" -f 4- | cut -d "|" -f 1`
+        size_data=`tail -n+5 $file | head -n 1 | cut -d "|" -f 4- | cut -d "|" -f 2`
+        size_bss=`tail -n+5 $file | head -n 1 | cut -d "|" -f 4- | cut -d "|" -f 3`
+        size_total=`tail -n+5 $file | head -n 1 | cut -d "|" -f 4- | cut -d "|" -f 4`
+
+        echo -e "total: $size_total (text: $size_text, data: $size_data, bss: $size_bss)\tfor ${switchname}"
+    done
+}
+
+# first measurement: check the difference between reference build and build with all flags except the removed flags.
+measurement_1()
+{
+    if [ $# -eq 0 ]; then
+        local all_switches=''
+        echo "no switches to measure"
+        return 0
+    else
+        local all_switches=("${!1}")
+        echo "measurement_1: measure switches ${all_switches[@]}"
+    fi
+    local flag=''
+    local flags_remove='' # flags removed from build
+    local switches=''
+    local filestring=''
+
+    for i in "${all_switches[@]}"; do
+        flag=($i)
+        flags_remove=($i)
+
+        # remove some additional flags if required
+        if [ $i == "CHANNEL_MONITOR=1" ]; then
+            flags_remove=( ${flags_remove[@]} "CHANNEL_MANAGER=1" )
+        elif [ $i == "COAP=1" ]; then
+            flags_remove=( ${flags_remove[@]} "COAPS=1" )
+        fi
+
+        # remove flags_remove from build
+        switches=( "${all_switches[@]}" )
+        for j in "${flags_remove[@]}"; do
+            switches=( "${switches[@]/$j}" )
+        done
+
+        echo "measuring $flag"
+
+        size_nrf52840 switches[@]
+        filestring=("${OT_REPORT_FILE}_all_but_${flag}")
+        echo "saving to file ${filestring%=1}"
+        cp "${OT_REPORT_FOLDER}/${OT_REPORT_FILE}" "${OT_REPORT_FOLDER}/${filestring%=1}"
+
+    done
+}
+
+# second measurement: check the difference between reference build and build with the measured flags enabled.
+measurement_2()
+{
+    if [ $# -eq 0 ]; then
+        local all_switches=''
+        echo "no switches to measure"
+        return 0
+    else
+        local all_switches=("${!1}")
+        echo "measurement_2: measure switches ${all_switches[@]}"
+    fi
+    local flag=''
+    local flags_add='' # flags used in build (second measurement)
+    local filestring=''
+
+    for i in "${all_switches[@]}"; do
+        flag=($i)
+        flags_add=($i)
+
+        # add some additional flags if required
+        if [ $i == "CHANNEL_MANAGER=1" ]; then
+            flags_add=( ${flags_add[@]} "CHANNEL_MONITOR=1" )
+        elif [ $i == "COAPS=1" ]; then
+            flags_add=( ${flags_add[@]} "COAP=1" )
+        elif [ $i == "MLR=1" ]; then
+            flags_add=( ${flags_add[@]} "THREAD_VERSION=1.2" )
+        fi
+
+        echo "measuring $flag"
+
+        size_nrf52840 flags_add[@]
+        filestring=("${OT_REPORT_FILE}_${flag}")
+        echo "saving to file ${filestring%=1}"
+        cp "${OT_REPORT_FOLDER}/${OT_REPORT_FILE}" "${OT_REPORT_FOLDER}/${filestring%=1}"
+    done
+}
+
 main()
 {
-    local all_switches=(
-        "BACKBONE_ROUTER=1"
+    local common_switches=(
         "BORDER_AGENT=1"
         "BORDER_ROUTER=1"
         "CHANNEL_MANAGER=1"
@@ -174,7 +290,6 @@ main()
         "COAP_OBSERVE=1"
         "COAPS=1"
         "COMMISSIONER=1"
-        "COVERAGE=1"
         "DEBUG=1"
         "DHCP6_CLIENT=1"
         "DHCP6_SERVER=1"
@@ -182,7 +297,6 @@ main()
         "DISABLE_DOC=1"
         "DISABLE_TOOLS=1"
         "DNS_CLIENT=1"
-        "DUA=1"
         "DYNAMIC_LOG_LEVEL=1"
         "ECDSA=1"
         "IP6_FRAGM=1"
@@ -192,8 +306,6 @@ main()
         "LEGACY=1"
         "LINK_RAW=1"
         "MAC_FILTER=1"
-        "MLE_LONG_ROUTES=1"
-        "MLR=1"
         "MTD_NETDIAG=1"
         "REFERENCE_DEVICE=1"
         "SERVICE=1"
@@ -202,61 +314,27 @@ main()
         "SNTP_CLIENT=1"
         "TIME_SYNC=1"
         "UDP_FORWARD=1"
-        "THREAD_VERSION=1.2"
+        "BIG_ENDIAN=1"
+        "CLI_TRANSPORT=UART"
+        "LOG_OUTPUT=NONE"
     )
 
-    # set -ex
     if [[ $# == 0 ]]; then
         setup
-        size_nrf52840
+        size_nrf52840_prepare_reference_build common_switches[@]
+        measurement_1 common_switches[@]
+        size_nrf52840_prepare_reference_build
+        measurement_2 common_switches[@]
     elif [[ $1 == setup ]]; then
         setup
-    elif [[ $1 == no_flags ]]; then
-        size_nrf52840
-    elif [[ $1 == all_flags ]]; then
-        size_nrf52840 all_switches[@]
     elif [[ $1 == nrf52840 ]]; then
-        set -ex
-        local flag=''
-        local flags_remove='' # flags removed from build (first measurement)
-        local flags_add='' # flags used in build (second measurement)
-        local switches=''
-        local filestring=''
-
-        for i in "${all_switches[@]}"; do
-            flag=($i)
-            flags_add=($i)
-            flags_remove=($i)
-
-            # add some additional flags if required
-            if [ $i == "CHANNEL_MANAGER=1" ]; then
-                flags_add=( ${flags_add[@]} "CHANNEL_MONITOR=1" )
-            elif [ $i == "CHANNEL_MONITOR=1" ]; then
-                flags_remove=( ${flags_remove[@]} "CHANNEL_MANAGER=1" )
-            elif [ $i == "COAPS=1" ]; then
-                flags_add=( ${flags_add[@]} "COAP=1" )
-            elif [ $i == "COAP=1" ]; then
-                flags_remove=( ${flags_remove[@]} "COAPS=1" )
-            fi
-
-            # remove flags_remove from build
-            switches=( "${all_switches[@]}" )
-            for j in "${flags_remove[@]}"; do
-                switches=( "${switches[@]/$j}" )
-            done
-
-            echo "measuring $flag"
-
-            size_nrf52840 switches[@]
-            filestring=("${OT_REPORT_FILE}_all_but_${flag}")
-            echo "saving to file ${filestring%=1}"
-            cp "${OT_REPORT_FILE}" ${filestring%=1}
-
-            size_nrf52840 flags_add[@]
-            filestring=("${OT_REPORT_FILE}_${flag}")
-            echo "saving to file ${filestring%=1}"
-            cp "${OT_REPORT_FILE}" ${filestring%=1}
-        done
+        # size_nrf52840_prepare_reference_build common_switches[@]
+        # measurement_1 common_switches[@]
+        size_nrf52840_prepare_reference_build
+        measurement_2 common_switches[@]
+        print_size_reports
+    elif [[ $1 == print ]]; then
+        print_size_reports
     else
         echo "USAGE: $0 [setup|nrf52840]"
         exit 128
